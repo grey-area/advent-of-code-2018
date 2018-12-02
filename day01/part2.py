@@ -8,13 +8,12 @@ from itertools import cycle
 # Requires looping through the array 135 times
 
 freq_changes = np.loadtxt('input', dtype=np.int32)
+initial_cycle = np.cumsum(freq_changes)
 
-freq_seen = np.cumsum(freq_changes)
-freq = freq_seen[-1]
-freq_seen = frozenset(freq_seen)
-    
+freq = initial_cycle[-1]
+initial_cycle = frozenset(initial_cycle)
 for change in cycle(freq_changes):
     freq += change
-    if freq in freq_seen:
+    if freq in initial_cycle:
         print(freq)
         break
