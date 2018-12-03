@@ -1,6 +1,6 @@
 import numpy as np
 import re
-from collections import namedtuple
+import utils
 
 # How many square inches belong to two or more claims?
 # Regex the input.
@@ -9,20 +9,15 @@ from collections import namedtuple
 # claimed within its area is equal to its area.
 
 
-with open('input') as f:
-    data = f.read().splitlines()
-re_str = '^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$'
-
-
-Claim = namedtuple('Claim', ['x', 'y', 'w', 'h'])
+data = utils.load_data()
 claims = {}
 
 
 fabric = np.zeros((1000, 1000), dtype=np.int32)
 
 for line in data:
-    id_, x, y, w, h = map(int, re.search(re_str, line).groups())
-    claims[id_] = Claim(x, y, w, h)
+    id_, x, y, w, h = map(int, re.search(utils.re_str, line).groups())
+    claims[id_] = utils.Claim(x, y, w, h)
 
     fabric[y:y+h, x:x+w] += 1
 
