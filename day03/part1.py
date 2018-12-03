@@ -1,5 +1,4 @@
 import numpy as np
-import re
 import utils
 
 # How many square inches belong to two or more claims?
@@ -7,13 +6,10 @@ import utils
 # Store number of claims per square inch in a numpy array.
 
 
-data = utils.load_data()
-
+claims = utils.load_data()
 fabric = np.zeros((1000, 1000), dtype=np.int32)
 
-for line in data:
-    id_, x, y, w, h = map(int, re.search(utils.re_str, line).groups())
-
-    fabric[y:y+h, x:x+w] += 1
+for c in claims.values():
+    fabric[c.y:c.y+c.h, c.x:c.x+c.w] += 1
 
 print(np.sum(fabric > 1))
