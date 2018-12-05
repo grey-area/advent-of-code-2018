@@ -1,4 +1,5 @@
 from string import ascii_lowercase
+import re
 
 # For each letter, remove all instances of that letter in each case.
 # Then reduce the string by removing pairs of adjacent letters that are the same but have
@@ -11,7 +12,7 @@ with open('input') as f:
 resulting_lengths = {}
 
 for l in ascii_lowercase:
-    data_rem_l = data.replace(l, '').replace(l.upper(), '')
+    data_rem_l = re.sub(f'{l}|{l.upper()}', '', data)
 
     ans_str = []
 
