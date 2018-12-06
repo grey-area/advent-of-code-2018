@@ -7,7 +7,6 @@ import numpy as np
 
 # TODO:
 # - replace hacky argmin
-# - tidy up set unions
 
 # Kind of hacky
 # Return 50 if the minimum element isn't unique, else argmin
@@ -34,12 +33,11 @@ for p_i, p in enumerate(points):
 closest = argmin(dists, len(points))
 
 # We can discount points that are nearest to the edge cells
-include = set(range(len(points)))
-discount = set(closest[0, :])
-discount = discount.union(set(closest[-1, :]))
-discount = discount.union(set(closest[:, 0]))
-discount = discount.union(set(closest[:, -1]))
-include = include - discount
+discount = set(np.concatenate((closest[0, :],
+                               closest[-1, :],
+                               closest[:, 0],
+                               closest[:, -1])))
+include = set(range(len(points))) - discount
 include = np.array(sorted(list(include)))
 
 indices, counts = np.unique(closest[closest < len(points)], return_counts=True)
