@@ -1,7 +1,7 @@
 from collections import namedtuple
 import re
 
-Point = namedtuple('Point', 'x y')
+Point = namedtuple('Point', 'y x')
 points = []
 
 def load_data():
