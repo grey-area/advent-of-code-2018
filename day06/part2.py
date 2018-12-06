@@ -6,17 +6,18 @@ import numpy as np
 D = 10000
 
 points = utils.load_data()
-ys, xs = zip(*points)
+max_x = max(points, key=lambda p: p.x).x
+max_y = max(points, key=lambda p: p.y).y
 
-x_grid = np.arange(max(xs) + 1, dtype=np.int32)
-y_grid = np.arange(max(ys) + 1, dtype=np.int32)
-grid = np.zeros((max(xs) + 1, max(ys) + 1, len(points)), dtype=np.int32)
+x_coords = np.arange(max_x + 1, dtype=np.int32)
+y_coords = np.arange(max_y + 1, dtype=np.int32)
+dists = np.zeros((max_x + 1, max_y + 1, len(points)), dtype=np.int32)
 
 for p_i, p in enumerate(points):
-    x_dists = np.abs(x_grid - p.x)
-    y_dists = np.abs(y_grid - p.y)
+    x_dists = np.abs(x_coords - p.x)
+    y_dists = np.abs(y_coords - p.y)
     p_dists = np.expand_dims(x_dists, 1) + np.expand_dims(y_dists, 0)
-    grid[:, :, p_i] = p_dists
+    dists[:, :, p_i] = p_dists
 
-total_distances = np.sum(grid, axis=2)
-print(np.sum(total_distances < D))
+total_dists = np.sum(dists, axis=2)
+print(np.sum(total_dists < D))
