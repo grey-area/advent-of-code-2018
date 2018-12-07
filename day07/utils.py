@@ -15,5 +15,5 @@ def load_data():
         blocks[first].add(second)
         depends[second].add(first)
 
-    free_events = set(blocks.keys()) - set(depends.keys())        
-    return free_events, depends, blocks
+    free_events = list(set(blocks.keys()) - set(depends.keys()))
+    return sorted(free_events), depends, blocks
