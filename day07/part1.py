@@ -1,20 +1,12 @@
 import utils
-import bisect
 
-free_events, num_depends, blocks = utils.load_data()
+graph = utils.load_data()
 
-ans = ''
+ans_str = ''
+while graph.num_free_events() > 0:
+    event = graph.pop_free_event()
+    graph.remove_dependencies(event)
 
-while len(free_events) > 0:
-    event = free_events.popleft()
+    ans_str += event
 
-    depending_events = blocks[event]
-    for depending_event in depending_events:
-        num_depends[depending_event] -= 1
-
-        if num_depends[depending_event] == 0:
-            bisect.insort_right(free_events, depending_event)
-
-    ans += event
-
-print(ans)
+print(ans_str)

@@ -2,7 +2,7 @@ import utils
 import bisect
 from collections import namedtuple, deque
 
-free_events, num_depends, blocks = utils.load_data()
+graph = utils.load_data()
 
 class Job():
     def __init__(self, event, t):
@@ -11,13 +11,13 @@ class Job():
 
 jobs = []
 
-ans = ''
+ans_str = ''
 total_time = 0
 
-while len(free_events) + len(jobs) > 0:
+while graph.num_free_events() + len(jobs) > 0:
 
-    if len(jobs) < 5 and len(free_events) > 0:
-        event = free_events.popleft()
+    if len(jobs) < 5 and graph.num_free_events() > 0:
+        event = graph.pop_free_event()
         t = ord(event) - ord('A') + 61
         jobs.append(Job(event, t))
 
@@ -28,16 +28,10 @@ while len(free_events) + len(jobs) > 0:
             job.t -= soonest_t
 
             if job.t == 0:
-                depending_events = blocks[job.event]
-                for depending_event in depending_events:
-                    num_depends[depending_event] -= 1
-
-                    if num_depends[depending_event] == 0:
-                        bisect.insort_right(free_events, depending_event)
-
-                ans += job.event
+                graph.remove_dependencies(job.event)
+                ans_str += job.event
 
         jobs = [job for job in jobs if job.t > 0]
 
-print(ans)
+print(ans_str)
 print(total_time)
