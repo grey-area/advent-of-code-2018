@@ -1,5 +1,5 @@
 import re
-from collections import defaultdict
+from collections import defaultdict, deque
 
 def load_data():
 
@@ -15,5 +15,5 @@ def load_data():
         blocks[first].add(second)
         num_depends[second] += 1
 
-    free_events = list(set(blocks.keys()) - set(num_depends.keys()))
-    return sorted(free_events), num_depends, blocks
+    free_events = deque(sorted(set(blocks.keys()) - set(num_depends.keys())))
+    return free_events, num_depends, blocks
