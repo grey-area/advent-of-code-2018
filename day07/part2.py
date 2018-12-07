@@ -1,6 +1,4 @@
 import utils
-import bisect
-from collections import namedtuple, deque
 
 
 class Job():
