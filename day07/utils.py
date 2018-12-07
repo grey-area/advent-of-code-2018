@@ -9,11 +9,11 @@ def load_data():
     re_str = '^Step ([A-Z]) must be finished before step ([A-Z]) can begin.$'
 
     blocks = defaultdict(set)
-    depends = defaultdict(set)
+    num_depends = defaultdict(int)
     for line in data:
         first, second = re.search(re_str, line).groups()
         blocks[first].add(second)
-        depends[second].add(first)
+        num_depends[second] += 1
 
-    free_events = list(set(blocks.keys()) - set(depends.keys()))
-    return sorted(free_events), depends, blocks
+    free_events = list(set(blocks.keys()) - set(num_depends.keys()))
+    return sorted(free_events), num_depends, blocks
