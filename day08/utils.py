@@ -6,28 +6,26 @@ class Node():
         self.children = []
         self.metadata = []
 
+        self.value = None
+
     def traverse(self):
         yield self
 
         for child in self.children:
             yield from child.traverse()
 
-    def value(self):
-        if self.num_children == 0:
-            return sum(self.metadata)
+    def compute_value(self):
+        if self.value is None:
 
-        else:
-            value = 0
-            metadata_values = {}
-            for m in self.metadata:
-                c_i = m - 1
-                if c_i >= 0 and c_i < self.num_children:
-                    if m not in metadata_values.keys():
-                        metadata_values[m] = self.children[c_i].value()
-                    value += metadata_values[m]
+            if self.num_children == 0:
+                self.value = sum(self.metadata)
+            else:
+                self.value = 0
+                for m in self.metadata:
+                    if m >= 1 and m <= self.num_children:
+                        self.value += self.children[m - 1].compute_value()
 
-            return value
-
+        return self.value
 
 def load_data():
     with open('input') as f:
