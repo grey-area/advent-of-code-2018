@@ -28,7 +28,7 @@ class Node():
         return self.value
 
 def load_data():
-    with open('input') as f:
+    with open('../input') as f:
         data = list(map(int, f.read().split()))
 
     root_children, root_metadata = data[:2]
