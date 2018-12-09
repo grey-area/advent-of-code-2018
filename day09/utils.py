@@ -24,14 +24,6 @@ class Marble():
 
         return self.next
 
-    def generate_circle(self):
-        start_value = self.value
-        marble = self.next
-        yield start_value
-        while marble.value != start_value:
-            yield marble.value
-            marble = marble.next
-
 
 def load_data():
     with open('input') as f:
