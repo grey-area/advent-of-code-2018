@@ -12,4 +12,5 @@ def cell_power(x, y):
 power = np.fromfunction(cell_power, shape=(300, 300))
 three_by_three = convolve2d(power, np.ones((3, 3)), mode='valid')
 
-print(np.unravel_index(np.argmax(three_by_three), three_by_three.shape))
+x, y = np.unravel_index(np.argmax(three_by_three), three_by_three.shape)
+print(f'{x},{y}')

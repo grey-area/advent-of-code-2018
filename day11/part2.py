@@ -18,4 +18,5 @@ def compute_max_coord(power, kernel):
 
 power = np.fromfunction(cell_power, shape=(300, 300))
 
-print(max([(k, compute_max_coord(power, k)) for k in range(1, 301)], key=lambda x: x[1][1]))
+k, ((x, y), v) = max([(k, compute_max_coord(power, k)) for k in range(1, 301)], key=lambda x: x[1][1])
+print(f'{x},{y},{k}')
