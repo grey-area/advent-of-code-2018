@@ -16,14 +16,17 @@ def transform(state, kernel, rules):
     # Iterate
     state = rules[convolve(state, kernel, mode='same')]
 
-    # Strip off leading empty pots
+    # Strip off leading empty pots apart from the first 2
     first_non_zero = np.argmax(state)
     if first_non_zero > 2:
-        state = state[first_non_zero-2:]
+        state = state[first_non_zero - 2:]
         index_offset += first_non_zero - 2
 
-    # We should really strip off trailing empty pots as well
-    # but for my input we didn't have to
+    # Strip off trailing empty pots apart from the first 2
+    last_non_zero_dist_from_end = np.argmax(state[::-1])
+    last_non_zero = state.size - last_non_zero_dist_from_end + 1
+    if last_non_zero_dist_from_end > 2:
+        state = state[:last_non_zero + 2]
 
     return state, index_offset
 
