@@ -6,7 +6,8 @@ from scipy.signal import convolve, fftconvolve
 def transform(state, kernel, rules):
     index_offset = 0
 
-    # Ensure that the state has leading and trailing empty pots
+    # Ensure that the state has at least 2 leading and trailing empty pots
+    # and adjust index offset
     if np.sum(state[:2]) > 0:
         state = np.concatenate((np.zeros(2, dtype=np.bool), state))
         index_offset -= 2
@@ -16,17 +17,14 @@ def transform(state, kernel, rules):
     # Iterate
     state = rules[convolve(state, kernel, mode='same')]
 
-    # Strip off leading empty pots apart from the first 2
+    # Strip off leading empty pots and adjust index offset
     first_non_zero = np.argmax(state)
-    if first_non_zero > 2:
-        state = state[first_non_zero - 2:]
-        index_offset += first_non_zero - 2
+    state = state[first_non_zero:]
+    index_offset += first_non_zero
 
-    # Strip off trailing empty pots apart from the first 2
-    last_non_zero_dist_from_end = np.argmax(state[::-1])
-    last_non_zero = state.size - last_non_zero_dist_from_end + 1
-    if last_non_zero_dist_from_end > 2:
-        state = state[:last_non_zero + 2]
+    # Strip off trailing empty pots
+    last_non_zero = state.size - np.argmax(state[::-1]) + 1
+    state = state[:last_non_zero]
 
     return state, index_offset
 
