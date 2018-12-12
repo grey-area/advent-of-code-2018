@@ -3,6 +3,17 @@ import numpy as np
 from scipy.signal import convolve, fftconvolve
 
 
+# Principle: in order to feasibly compute the answer for the 50 billionth iteration,
+# the automata has to reach some kind of steady state, though the fixed pattern may move
+# to the left or right.
+# After each iteration, we strip off leading and trailing empty pots. We record the current pattern,
+# the iteration at which it happened, and the index of the left-most pot.
+# We look for the first pattern that repeats at two iterations. We use the difference between
+# the two iterations and the difference between the index of the left-most pot in the two
+# iterations to extrapolate the index of the left-most pot by the Nth iteration, and
+# then compute the result
+
+
 def transform(state, kernel, rules):
     index_offset = 0
 
@@ -51,26 +62,28 @@ def main():
 
     # Record states that we've seen before, the iteration at which we saw them,
     # and the index of the left-most pot when we saw them
-    seen_state_index_offsets = {state.tobytes(): (0, 0)}
+    seen_states = {state.tobytes(): (0, 0)}
 
     N = 50000000000
     index_offset = 0
 
-    for i in range(1, N, 1):
+    for iteration in range(1, N, 1):
         state, index_offset_change = transform(state, kernel, rules)
         index_offset += index_offset_change
 
-        state_bytes = state.tobytes()
-        if state_bytes in seen_state_index_offsets.keys():
-            seen_i, seen_offset = seen_state_index_offsets[state_bytes]
+        state_bytes = state.tobytes() # hashable
+        # If we've seen this state before, record the iteration at which it happened
+        # and the index of the left-most pot at that iteration
+        if state_bytes in seen_states.keys():
+            seen_iteration, seen_offset = seen_states[state_bytes]
             break
 
-        seen_state_index_offsets[state_bytes] = (i, index_offset)
+        seen_states[state_bytes] = (iteration, index_offset)
 
     # Adjust the index offset to what it would be by the Nth step
-    iteration_diff = i - seen_i
+    iteration_diff = iteration - seen_iteration
     index_diff = index_offset - seen_offset
-    index_offset += ((N - i) // iteration_diff) * index_diff
+    index_offset += ((N - iteration) // iteration_diff) * index_diff
 
     # Compute the indices of the pots for the Nth step
     indices = np.arange(index_offset, index_offset + state.size, 1)
