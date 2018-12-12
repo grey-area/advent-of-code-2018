@@ -53,26 +53,28 @@ def main():
     # and the index of the left-most pot when we saw them
     seen_state_index_offsets = {state.tobytes(): (0, 0)}
 
-    steps = 50000000000
+    N = 50000000000
     index_offset = 0
 
-    for i in range(1, steps, 1):
+    for i in range(1, N, 1):
         state, index_offset_change = transform(state, kernel, rules)
         index_offset += index_offset_change
 
         state_bytes = state.tobytes()
         if state_bytes in seen_state_index_offsets.keys():
-            state_i, seen_offset = seen_state_index_offsets[state_bytes]
+            seen_i, seen_offset = seen_state_index_offsets[state_bytes]
             break
 
         seen_state_index_offsets[state_bytes] = (i, index_offset)
 
-    iteration_diff = i - state_i
+    # Adjust the index offset to what it would be by the Nth step
+    iteration_diff = i - seen_i
     index_diff = index_offset - seen_offset
+    index_offset += ((N - i) // iteration_diff) * index_diff
 
-    index_offset += ((steps - i) // iteration_diff) * index_diff
-
+    # Compute the indices of the pots for the Nth step
     indices = np.arange(index_offset, index_offset + state.size, 1)
+    # Compute the sum of indices of pots with plants for the Nth step
     print(np.sum(indices * state))
 
 
