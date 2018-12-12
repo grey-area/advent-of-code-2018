@@ -49,26 +49,23 @@ def main():
     state, rules = load_data()
     kernel = np.array([2**x_i for x_i in range(5)], dtype=np.int8)
 
-    # Record states that we've seen before, and the index of the
-    seen_states = [state.copy()]
-    seen_index_offsets = [0]
+    # Record states that we've seen before, the iteration at which we saw them,
+    # and the index of the left-most pot when we saw them
+    seen_state_index_offsets = {state.tobytes(): (0, 0)}
 
-    index_offset = 0
     steps = 50000000000
-    terminate = False
+    index_offset = 0
+
     for i in range(1, steps, 1):
         state, index_offset_change = transform(state, kernel, rules)
         index_offset += index_offset_change
 
-        for state_i, (seen_state, seen_offset) in enumerate(zip(seen_states, seen_index_offsets)):
-            if state.size == seen_state.size and np.all(state == seen_state):
-                terminate = True
-
-        if terminate:
+        state_bytes = state.tobytes()
+        if state_bytes in seen_state_index_offsets.keys():
+            state_i, seen_offset = seen_state_index_offsets[state_bytes]
             break
 
-        seen_states.append(state)
-        seen_index_offsets.append(index_offset)
+        seen_state_index_offsets[state_bytes] = (i, index_offset)
 
     iteration_diff = i - state_i
     index_diff = index_offset - seen_offset
