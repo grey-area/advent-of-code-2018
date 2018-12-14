@@ -16,7 +16,6 @@ class Cart():
         occupancy[tuple(self.pos)] -= 1
         self.pos += self.vel
         tuple_pos = tuple(self.pos)
-
         occupancy[tuple_pos] += 1
 
         for corner_type, corner_list in corners.items():
@@ -40,8 +39,8 @@ directions_str = '>v<^'
 directions = [np.array(x) for x in [[1, 0], [0, 1], [-1, 0], [0, -1]]]
 re_str = '>|v|<|\^|\+|0|1'
 carts = []
-junctions = []
-corners = defaultdict(list)
+junctions = set()
+corners = defaultdict(set)
 M, N = len(lines[0]), len(lines)
 
 for y, line in enumerate(lines):
@@ -53,17 +52,15 @@ for y, line in enumerate(lines):
             direction = directions[directions_str.index(t)]
             carts.append(Cart(x, y, direction))
         elif t=='+':
-            junctions.append((x, y))
+            junctions.add((x, y))
         else:
-            corners[int(t)].append((x, y))
+            corners[int(t)].add((x, y))
 
 occupancy = np.zeros((M, N), dtype=np.int32)
 for c in carts:
     occupancy[tuple(c.pos)] = 1
 
-i = 0
 while True:
-    i += 1
     carts = sorted(carts, key=lambda c: (c.pos[1], c.pos[0]))
     for c in carts:
         collision = c.update(occupancy, junctions, corners)
