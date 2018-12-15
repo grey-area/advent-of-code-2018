@@ -65,7 +65,7 @@ while True:
     for c in carts:
         collision = c.update(occupancy, junctions, corners)
         if collision:
-            print(tuple(c.pos))
+            print(c.pos)
             break
     if collision:
         break
