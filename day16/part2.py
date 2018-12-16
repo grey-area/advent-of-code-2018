@@ -1,35 +1,13 @@
-import operator
-from functools import partial
 import re
+from utils import get_ops, load_data
 
-def instruction(op, A_type, B_type, A, B, C, registers):
-    if A_type == 'r':
-        A = registers[A]
-    if B_type == 'r':
-        B = registers[B]
-    registers[C] = int(op(A, B))
-
-# Build the set of ops
-ops = []
-for op in [operator.add, operator.mul, operator.and_, operator.or_]:
-    ops.append(partial(instruction, op, 'r', 'r'))
-    ops.append(partial(instruction, op, 'r', 'i'))
-ops.append(partial(instruction, lambda a, b: a, 'r', None))
-ops.append(partial(instruction, lambda a, b: a, 'i', None))
-for op in [operator.gt, operator.eq]:
-    ops.append(partial(instruction, op, 'i', 'r'))
-    ops.append(partial(instruction, op, 'r', 'i'))
-    ops.append(partial(instruction, op, 'r', 'r'))
-
-with open('input') as f:
-    text = f.read()
-    part1, part2 = text.split('\n\n\n')
-    examples = part1.split('\n\n')
+ops = get_ops()
+part1, part2 = load_data()
 
 # Record which ops are consistent with the behaviour observed for each opcode
 opcode_consistent = {i: set(ops) for i in range(16)}
 
-for example in examples:
+for example in part1:
     before_str, inst_str, after_str = example.splitlines()
     r0 = [int(i) for i  in re.findall('\d+', before_str)]
     opcode, A, B, C = [int(i) for i  in re.findall('\d+', inst_str)]
@@ -53,7 +31,7 @@ for i in range(16):
 
 opcodes = [next(iter(opcode_consistent[opcode])) for opcode in range(16)]
 r = [0, 0, 0, 0]
-for line in part2[1:].splitlines():
+for line in part2.splitlines():
     opcode, A, B, C = [int(i) for i  in re.findall('\d+', line)]
     opcodes[opcode](A, B, C, r)
 
