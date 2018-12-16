@@ -22,17 +22,16 @@ for example in examples:
 # Once we've gone through all the examples, any op that is only consistent
 # with a single opcode cannot be consistent with any other opcode.
 # Repeatedly remove such ops from other opcodes.
-non_unique_opcodes = set(range(16))
-while(len(non_unique_opcodes) > 0):
-    for opcode in non_unique_opcodes.copy():
-        if len(opcode_consistent[opcode]) == 1:
-            non_unique_opcodes.remove(opcode)
-            op = next(iter(opcode_consistent[opcode]))
-            for opcode1 in range(16):
-                if opcode1 == opcode or op not in opcode_consistent[opcode1]:
-                    continue
-                opcode_consistent[opcode1].remove(op)
-opcodes = [next(iter(opcode_consistent[opcode])) for opcode in range(16)]
+opcodes = {}
+while True:
+    try:
+        opcode, op_set = next((opcode, ops.copy()) for opcode, ops in opcode_consistent.items() if len(ops) == 1)
+    except StopIteration:
+        break
+
+    opcodes[opcode] = next(iter(op_set))
+    for consistent in opcode_consistent.values():
+        consistent.difference_update(op_set)
 
 # Run the program
 r = [0, 0, 0, 0]
