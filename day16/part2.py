@@ -32,6 +32,7 @@ while True:
     opcodes[opcode] = next(iter(op_set))
     for consistent in opcode_consistent.values():
         consistent.difference_update(op_set)
+    del(opcode_consistent[opcode])
 
 # Run the program
 r = [0, 0, 0, 0]
