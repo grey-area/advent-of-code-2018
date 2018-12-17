@@ -1,8 +1,6 @@
 import re
 import numpy as np
-from scipy.misc import toimage
 
-#with open('example_input') as f:
 with open('input') as f:
     data = f.read().splitlines()
 
@@ -40,27 +38,8 @@ for line in data:
     else:
         grid[u, -x_min + d1:-x_min + d2 + 1] = 3
 
-image_i = 0
-
-def save_grid(grid):
-    global image_i
-    image = 255 * np.ones((grid.shape[0] * grid.shape[1], 3), dtype=np.int32)
-    grid_flat = grid.flatten()
-    image[grid_flat == 3, :] = np.array([0, 0, 0])
-    image[grid_flat == 2, :] = np.array([0, 0, 255])
-    image[grid_flat == 1, :] = np.array([100, 100, 255])
-    image = np.reshape(image, (grid.shape[0], grid.shape[1], 3))
-    toimage(image, channel_axis=2).save(f'images/{image_i}.png')
-    image_i += 1
-    if image_i % 100 == 0:
-        print(image_i)
-
 
 def search_horizontal(grid, x0, y0, y_max):
-    #print(grid[:17, 39:53])
-    #print()
-    #save_grid(grid)
-
     xl, xr, y = x0, x0, y0
     while grid[y, xl] < 2 and grid[y + 1, xl] in [2, 3]:
         xl -= 1
@@ -83,10 +62,6 @@ def search_horizontal(grid, x0, y0, y_max):
 # If you do hit clay, fill in the row, start the search again one row up
 # If you don't hit clay at either end, start the search again at both ends
 def search_vertical(grid, x0, y0, y_max):
-    #print(grid[:17, 39:53])
-    #print()
-    #save_grid(grid)
-
     x, y = x0, y0
     saw = False
     while grid[y, x] < 2 and y < y_max:
@@ -107,7 +82,6 @@ def search_vertical(grid, x0, y0, y_max):
     search_horizontal(grid, x, y, y_max)
 
 search_vertical(grid, 500 - x_min, 0, y_max)
-#print(grid[:17, 39:53])
 grid = grid[y_min:, :]
 print(np.sum(np.logical_or(grid==1, grid==2)))
 print(np.sum(grid==2))
