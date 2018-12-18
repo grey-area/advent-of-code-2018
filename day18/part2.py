@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.signal import convolve
+from collections import defaultdict
 
 with open('input') as f:
     data = f.read().splitlines()
@@ -26,18 +27,20 @@ grid = np.array([[cell_type_values[cell_types.index(c)] for c in row] for row in
 kernel = np.ones((3, 3), dtype=np.int32)
 kernel[1, 1] = 0
 
-seen_states = [grid]
+seen_states = defaultdict(list)
 period = None
 M = 1000000000
+ans = 0
 
 for i in range(1, M + 1, 1):
     grid = update(grid, kernel)
+    ans = np.sum(grid==TREE) * np.sum(grid==LUMBER)
 
     if period is None:
-        for j, prev_state in enumerate(seen_states):
+        for j, prev_state in seen_states[ans]:
             if np.all(grid==prev_state):
                 period = i - j
-        seen_states.append(grid)
+        seen_states[ans].append((i, grid))
     else:
         if (M - i) % period == 0:
             break
