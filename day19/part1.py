@@ -1,8 +1,10 @@
-from machine import Machine, load_data
+from machine import Machine
 
 machine = Machine()
 
-data = load_data()
+while True:
+    halt = machine.step()
+    if halt is not None:
+        break
 
-for line in data:
-    print(line)
+print(machine.registers[0])
