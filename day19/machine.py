@@ -4,28 +4,21 @@ import re
 
 
 class Machine():
-    def __init__(self, ip=0, registers=[0, 0, 0, 0, 0, 0]):
+    def __init__(self, registers=[0, 0, 0, 0, 0, 0]):
         self.set_ops()
         self.registers = registers
-        self.ip = ip
-        self.steps = 0
+        self.ip = 0
         self.load_program()
 
-    def step(self, toprint=False):
+    def step(self):
         self.registers[self.ip_register] = self.ip
 
         if self.ip < 0 or self.ip >= len(self.program):
-            print(self.ip)
             return 'halt'
 
         opname, op, opargs = self.program[self.ip]
-        if toprint:
-            print(self.registers, self.ip, opname, opargs)
-        #if (self.registers[0] != 0 and self.steps > 100):
-        #    return 'halt'
         op(*opargs)
         self.ip = self.registers[self.ip_register] + 1
-        self.steps += 1
 
     def instruction(self, op, A_type, B_type, A, B, C):
         if A_type == 'r':
