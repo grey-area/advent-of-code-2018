@@ -32,4 +32,7 @@ for char in data:
     elif char == '|':
         p, distance = p_stack[-1]
 
-print(max(p_dists.values()))
+part1_ans = max(p_dists.values())
+part2_ans = sum(1 for d in p_dists.values() if d >= 1000)
+print(f'Part 1: {part1_ans}')
+print(f'Part 2: {part2_ans}')
