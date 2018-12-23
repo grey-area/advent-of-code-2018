@@ -38,7 +38,9 @@ mutation_rate = (max_val - min_val) // 2
 mutation = np.random.randint(-mutation_rate, mutation_rate+1, size=(100000, 3))
 points2 = np.expand_dims(best_point, 0) + mutation
 
+i = 0
 while True:
+    i += 1
     if i % 500 == 0:
         print(i, best_count, mutation_rate, ','.join([str(i) for i in best_point]))
     counts = compute_counts(points, points2, radii)
