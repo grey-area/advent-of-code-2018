@@ -33,10 +33,11 @@ best_point = np.mean(points, axis=0).astype(np.int64)
 best_count = 0
 
 t = 0
-mutation_rate = (max_val - min_val) // 2
+mutation_rate = (max_val - min_val) // 10
 
 mutation = np.random.randint(-mutation_rate, mutation_rate+1, size=(100000, 3))
 points2 = np.expand_dims(best_point, 0) + mutation
+mutation_rate = 100000
 
 i = 0
 while True:
