@@ -58,4 +58,33 @@ for i in range(W):
 start_node = node_id(TORCH, 0, 0, W, H)
 target_node = node_id(TORCH, target[0], target[1], W, H)
 path = find_path(graph, start_node, target_node)
-print(path.total_cost)
+
+
+# Visualization
+import numpy as np
+from scipy.misc import toimage
+
+colours = {
+    ROCK: np.array([180, 0, 0]),
+    WET: np.array([0, 0, 180]),
+    NARROW: np.array([0, 180, 0])
+}
+
+route_colours = {
+    ROCK: np.array([255, 180, 180]),
+    WET: np.array([180, 180, 255]),
+    NARROW: np.array([180, 255, 180])
+}
+
+image_data = np.zeros((type_grid.shape[1], type_grid.shape[0], 3))
+for i in range(W):
+    for j in range(H):
+        image_data[j, i, :] = colours[type_grid[i, j]]
+
+for node in path.nodes:
+    temp, y = divmod(node, H)
+    equip, x = divmod(temp, W)
+    image_data[y, x, :] = route_colours[type_grid[x, y]]
+
+image = toimage(image_data, channel_axis=2)
+image.save('solution.png')
