@@ -24,7 +24,7 @@ points_tns = torch.tensor(points.astype(np.float64), requires_grad=False)
 radii_tns = torch.tensor(radii.astype(np.float64), requires_grad=False)
 alpha = 1000000
 
-# Use stochastic gradient descent to get close to our answer
+# Use gradient descent to get close to our answer
 for i in range(15000):
     if point.grad is not None:
         point.grad.data.zero_()
