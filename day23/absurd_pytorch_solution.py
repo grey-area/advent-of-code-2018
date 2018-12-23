@@ -7,8 +7,8 @@ from torch.nn.functional import relu
 with open('input') as f:
     data = f.read().splitlines()
 
-points = np.zeros((1000, 3), dtype=np.int64)
-radii = np.zeros(1000, dtype=np.int64)
+points = np.zeros((len(data), 3), dtype=np.int64)
+radii = np.zeros(len(data), dtype=np.int64)
 
 re_str = '<(-?\d+),(-?\d+),(-?\d+)>, r=(\d+)'
 for line_i, line in enumerate(data):
