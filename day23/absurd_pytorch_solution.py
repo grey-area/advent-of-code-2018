@@ -4,6 +4,10 @@ import torch
 import torch.optim as optim
 from torch.nn.functional import relu
 
+#
+# Note, this approach does not find the globally optimal node in terms of
+# number of bots in range, but often produces a point with the correct Manhattan distance
+
 with open('input') as f:
     data = f.read().splitlines()
 
