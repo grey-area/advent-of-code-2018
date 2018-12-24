@@ -6,29 +6,16 @@ def find_targets(attacking_army, defending_army):
     attacking_army = sorted(attacking_army, key=lambda g: (g.effective_power, g.initiative), reverse=True)
 
     for attack_grp in attacking_army:
-        attack_grp.attacking = None
-        to_attack = None
-        best_damage = 0
-        for defend_grp in defending_army:
-            if defend_grp.under_attack:
-                continue
+        candidate_to_attack = sorted(defending_army, key=lambda g: (g.under_attack,
+                                                                    -attack_grp.do_damage(g, simulation=True),
+                                                                    -g.effective_power,
+                                                                    -g.initiative))[0]
 
-            damage = attack_grp.do_damage(defend_grp, simulation=True)
-            if damage > best_damage:
-                best_damage = damage
-                to_attack = defend_grp
-            elif damage == best_damage:
-                if to_attack is None:
-                    to_attack = defend_grp
-                elif defend_grp.effective_power > to_attack.effective_power:
-                    to_attack = defend_grp
-                elif to_attack.effective_power == defend_grp.effective_power:
-                    if defend_grp.initiative > to_attack.initiative:
-                        to_attack = defend_grp
 
-        if to_attack is not None and best_damage is not 0:
-            attack_grp.attacking = to_attack
-            to_attack.under_attack = True
+        damage = attack_grp.do_damage(candidate_to_attack, simulation=True)
+        if damage > 0 and not candidate_to_attack.under_attack:
+            attack_grp.attacking = candidate_to_attack
+            candidate_to_attack.under_attack = True
 
 
 def combat_round(immune, infection):
