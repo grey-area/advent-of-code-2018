@@ -42,7 +42,7 @@ def combat_round(immune, infection):
     all_groups = sorted(immune + infection, key=lambda g:g.initiative, reverse=True)
     for grp in all_groups:
         grp.do_damage(grp.attacking)
-    for grp in immune + infection:
+    for grp in all_groups:
         grp.post_combat_reset()
     immune = [grp for grp in immune if grp.units > 0]
     infection = [grp for grp in infection if grp.units > 0]
@@ -81,9 +81,7 @@ class Group():
 
         if not simulation:
             units_to_remove = HP_damage // other.HP
-            other.units -= units_to_remove
-            if other.units < 0:
-                other.units = 0
+            other.units = max(0, other.units - units_to_remove)
             other.compute_effective_power()
 
         return HP_damage
@@ -95,8 +93,6 @@ class Group():
         self.attacking = None
         self.under_attack = False
         self.compute_effective_power()
-
-
 
 
 def load_data(boost=0):

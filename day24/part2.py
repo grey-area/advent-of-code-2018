@@ -15,14 +15,24 @@ def trial_boost(boost):
 
     return immune, infection
 
+def boost_search_value(immune, infection):
+    return len(immune) > 0 and len(infection) == 0
 
-boost = 1
-while True:
-    immune, infection = trial_boost(boost)
+def binary_search(low=1, high=None):
+    if high is not None:
+        mid = (low + high) // 2
+    else:
+        mid = low * 2
 
-    if len(immune) > 0 and len(infection) == 0:
-        break
+    immune, infection = trial_boost(mid)
 
-    boost += 1
+    if low == mid:
+        return immune
+    elif boost_search_value(immune, infection):
+        return binary_search(low, mid-1)
+    else:
+        return binary_search(mid+1, high)
+
+immune = binary_search()
 
 print(sum([grp.units for grp in immune]))
