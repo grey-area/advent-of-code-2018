@@ -9,8 +9,6 @@ def find_targets(attacking_army, defending_army):
         attack_grp.attacking = None
         to_attack = None
         best_damage = 0
-        best_effective_power = 0
-        best_initiative = 0
         for defend_grp in defending_army:
             if defend_grp.under_attack:
                 continue
@@ -19,17 +17,14 @@ def find_targets(attacking_army, defending_army):
             if damage > best_damage:
                 best_damage = damage
                 to_attack = defend_grp
-                best_effective_power = defend_grp.effective_power
-                best_initiative = defend_grp.initiative
             elif damage == best_damage:
-                if defend_grp.effective_power > best_effective_power:
+                if to_attack is None:
                     to_attack = defend_grp
-                    best_effective_power = defend_grp.effective_power
-                    best_initiative = defend_grp.initiative
-                elif best_effective_power == defend_grp.effective_power:
-                    if defend_grp.initiative > best_initiative:
+                elif defend_grp.effective_power > to_attack.effective_power:
+                    to_attack = defend_grp
+                elif to_attack.effective_power == defend_grp.effective_power:
+                    if defend_grp.initiative > to_attack.initiative:
                         to_attack = defend_grp
-                        best_initiative = defend_grp.initiative
 
         if to_attack is not None and best_damage is not 0:
             attack_grp.attacking = to_attack
