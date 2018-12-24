@@ -42,14 +42,8 @@ def combat_round(immune, infection):
     all_groups = sorted(immune + infection, key=lambda g:g.initiative, reverse=True)
     for grp in all_groups:
         grp.do_damage(grp.attacking)
-    for grp in immune:
-        grp.attacking = None
-        grp.under_attack = False
-        grp.compute_effective_power()
-    for grp in infection:
-        grp.attacking = None
-        grp.under_attack = False
-        grp.compute_effective_power()
+    for grp in immune + infection:
+        grp.post_combat_reset()
     immune = [grp for grp in immune if grp.units > 0]
     infection = [grp for grp in infection if grp.units > 0]
     return immune, infection
@@ -96,6 +90,12 @@ class Group():
 
     def compute_effective_power(self):
         self.effective_power = self.units * (self.damage + self.boost)
+
+    def post_combat_reset(self):
+        self.attacking = None
+        self.under_attack = False
+        self.compute_effective_power()
+
 
 
 
