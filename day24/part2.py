@@ -1,7 +1,7 @@
 from utils import Group, find_targets, load_data, combat_round
 
-boost = 1
-while True:
+
+def trial_boost(boost):
     immune, infection = load_data(boost=boost)
 
     prev_units = sum([grp.units for grp in immune + infection])
@@ -12,6 +12,13 @@ while True:
         if prev_units == units:
             break
         prev_units = units
+
+    return immune, infection
+
+
+boost = 1
+while True:
+    immune, infection = trial_boost(boost)
 
     if len(immune) > 0 and len(infection) == 0:
         break
